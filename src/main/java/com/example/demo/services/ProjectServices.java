@@ -17,7 +17,7 @@ public class ProjectServices {
     private final ProjectRepository repository;
     private final ProjectMapper mapper;
 
-    public ProjectDto getProjectById(Integer id){
+    public ProjectDto getProjectById(Long id){
         Project project = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Project not found"));
         return mapper.toDto(project);
