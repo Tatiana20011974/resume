@@ -1,0 +1,58 @@
+CREATE SCHEMA IF NOT EXISTS  public;
+CREATE TABLE IF NOT EXISTS Employee
+(
+    id       BIGINT PRIMARY KEY,
+    name     VARCHAR(30) NOT NULL,
+    image    VARCHAR(30) NOT NULL,
+    telephon VARCHAR(30) NOT NULL,
+    mail     VARCHAR(30) NOT NULL
+    );
+CREATE TABLE IF NOT EXISTS Project
+(
+    id          BIGINT PRIMARY KEY,
+    name        VARCHAR(30) NOT NULL,
+    description VARCHAR(30) NOT NULL,
+    id_employee BIGINT      NOT NULL,
+    FOREIGN KEY (id_employee) REFERENCES Employee (id)
+    );
+CREATE TABLE IF NOT EXISTS Education
+(
+    id            BIGINT PRIMARY KEY,
+    yearStart     INT         NOT NULL,
+    yearEnd       INT         NOT NULL,
+    nameEducation VARCHAR(30) NOT NULL,
+    degree        VARCHAR(30) NOT NULL,
+    id_employee  BIGINT      NOT NULL,
+    FOREIGN KEY (id_employee) REFERENCES Employee (id)
+    );
+INSERT INTO Employee (id, name, image, telephon, mail)
+VALUES
+    (1,'Tanya','/images/image.jpg',3742934435,'rsfhgg@mail.ru' ),
+    (2,'Masha','/images/image.jpg',293742465,'sfghg@mail.ru '),
+    (3,'Anna','/images/image.jpg',2937346777,'seg@mail.ru' ),
+    (4,'Ira','/images/image.jpg',29374294565,'cnvneg@mail.ru' );
+
+INSERT INTO Project(id, name, description, id_employee)
+VALUES
+    (1,'Masha','Java Developer',1);
+
+INSERT INTO Education (id, yearStart, yearEnd, nameEducation, degree, id_employee)
+VALUES
+    (1,2005,2012,'BGU','BACALAVR',2),
+    (2,2004,2016,'BGU','BACALAVR',1),
+    (3,2007,2018,'BGUIR','PROFESSOR',1);
+
+CREATE TABLE IF NOT EXISTS public.Skills
+(
+    id           SERIAL PRIMARY KEY,
+    skill        INTEGER NOT NULL,
+    id_employee BIGINT  NOT NULL,
+    FOREIGN KEY (id_employee) REFERENCES Employee (id)
+    );
+CREATE TABLE IF NOT EXISTS public.tasks
+(
+    id         SERIAL PRIMARY KEY,
+    skill      INTEGER NOT NULL,
+    id_project BIGINT  NOT NULL,
+    FOREIGN KEY (id_project) REFERENCES Employee (id)
+    );

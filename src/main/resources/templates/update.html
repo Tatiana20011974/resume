@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="/css/update.css" rel="stylesheet" type="text/css"/>
+    <title>Title</title>
+</head>
+<body>
+<main>
+    <h1><span th:text="${title}"></span>resume</h1>
+    <form th:action="@{/resume.html/update}" method="post" th:object="${employee}">
+        <section class="title" id="title_class">
+            <input type="hidden" th:field="*{id}"/>
+
+            <label for="name">Name:</label>
+            <input type="text" id="name" th:field="*{name}" required/><br>
+
+            <label for="mail">Mail:</label>
+            <input type="text" id="mail" th:field="*{mail}" required/><br>
+
+            <label for="telephon">Telephone:</label>
+            <input type="text" id="telephon" th:field="*{telephon}" required/>
+        </section>
+
+        <section class="experience" id="experience_class">
+            <h2>Experience</h2>
+            <fieldset>
+                <label for="project_name">Name:</label><br>
+                <input type="text" id="project_name" th:field="*{name}" required/><br>
+                <label for="description">Description:</label><br>
+                <input type="text" id="description"><br>
+                <label>Tasks:</label><br>
+                <button type="submit">Add Task</button>
+                <button type="submit">Delete Project</button>
+            </fieldset>
+            <button type="submit">Add Project</button>
+        </section>
+
+        <section class="skills" id="skills_class">
+            <h2>Skills</h2>
+            <label for="skills">Skills:</label><br>
+            <select name="skills" id="skills" size="4" multiple>
+                <option value="java">JAVA</option>
+                <option value="spring">SPRING</option>
+                <option value="html">HTML</option>
+                <option value="css">CSS</option>
+                <option value="docker">DOCKER</option>
+                <option value="maven">MAVEN</option>
+            </select>
+        </section>
+
+        <section class="education" id="education_class">
+            <h2>Education</h2>
+            <fieldset>
+                <label for="yearStart">Year Start:</label><br>
+                <input type="number" id="yearStart"><br>
+                <label for="yearEnd">Year End:</label><br>
+                <input type="number" id="yearEnd"><br>
+                <label for="nameEducation">Name Education:</label><br>
+                <input type="text" id="nameEducation"><br>
+                <label for="degree">Degree:</label><br>
+                <input type="text" id="degree"><br>
+                <button type="submit">Delete Education</button>
+            </fieldset>
+            <button type="submit">Add Education</button>
+        </section>
+
+        <a th:href="@{/resumes}" class="action">Submit</a>
+        <a th:href="@{/resumes}" class="action">Cancel</a>
+    </form>
+</main>
+<footer>
+    <p> 2025 resume <span th:text="${employee.name}"></span>
+</footer>
+</body>
+</html>
