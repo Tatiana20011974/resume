@@ -3,6 +3,7 @@ package com.example.demo.mappers;
 import com.example.demo.dto.ProjectDto;
 import com.example.demo.model.Project;
 import org.mapstruct.Mapper;
+import org.springframework.context.annotation.ComponentScan;
 
 import java.util.List;
 

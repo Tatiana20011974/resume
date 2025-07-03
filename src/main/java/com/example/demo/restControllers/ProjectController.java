@@ -31,5 +31,14 @@ public class ProjectController {
             return ResponseEntity.notFound().build();
         }
     }
+    @GetMapping
+    public ResponseEntity<List<ProjectDto>> getAllProjects() {
+        List<ProjectDto> projects = service.getAllProject();
+        if (projects.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.ok(projects);
+        }
+    }
 
 }
