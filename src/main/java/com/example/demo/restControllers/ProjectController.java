@@ -1,22 +1,22 @@
 package com.example.demo.restControllers;
 
-import com.example.demo.RepositoryPort;
 import com.example.demo.dto.ProjectDto;
-import com.example.demo.model.Employee;
+import com.example.demo.request.CreateProjectRequest;
 import com.example.demo.services.ProjectServices;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.StreamingHttpOutputMessage;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 @Tag(name = "Проекты")
 @RestController
@@ -47,5 +47,21 @@ public class ProjectController {
             return ResponseEntity.ok(projects);
         }
     }
-
+    @PostMapping
+    public ResponseEntity<ProjectDto> createProject(
+            @Parameter(description = "Данные нового проекта", required = true)
+            @RequestBody  @Valid CreateProjectRequest request
+    ) {
+        try {
+            ProjectDto createProject = service.createProject(request);
+            URI location = ServletUriComponentsBuilder
+                    .fromCurrentRequest()
+                    .path("/{id}")
+                    .buildAndExpand(createProject.getId())
+                    .toUri();
+            return ResponseEntity.created(location).body(createProject);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 }
