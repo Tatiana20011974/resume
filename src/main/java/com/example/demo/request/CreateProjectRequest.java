@@ -2,9 +2,11 @@ package com.example.demo.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public class CreateProjectRequest {
     @NotBlank
     private String name;
