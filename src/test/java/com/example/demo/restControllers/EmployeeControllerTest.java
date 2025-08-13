@@ -4,12 +4,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Testcontainers
@@ -25,8 +28,18 @@ class EmployeeControllerTest {
 
     @Test
     void getEmployeeById() throws Exception {
-        this.mockMvc.perform(get("/employees"))
-                .andExpectAll(status().isOk());
+        this.mockMvc.perform(get("/employees/1"))
+                .andExpectAll(
+                        status().isOk(),
+                        content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON),
+                        content().json("""
+                               {"id":1,
+                               "image":"/images/image.jpg",
+                               "name":"Tanya",
+                               "telephon":3742934435,
+                               "mail":"rsfhgg@mail.ru"}
+                                """)
+                );
     }
 
     @Test
