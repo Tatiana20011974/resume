@@ -3,6 +3,7 @@ package com.example.demo.restControllers;
 import com.example.demo.dto.EmployeeDto;
 import com.example.demo.model.Employee;
 import com.example.demo.services.EmployeeServices;
+import com.example.demo.services.MailSenderService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,8 @@ import java.util.Optional;
 @RequestMapping("/employees")
 public class EmployeeController {
     private final EmployeeServices service;
+    private final MailSenderService mailSenderService;
+
     @GetMapping("/{id}")
     public ResponseEntity<EmployeeDto> getEmployeeById(@PathVariable Long id) {
         try {
@@ -55,6 +58,17 @@ public class EmployeeController {
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
+
+    }
+
+    @GetMapping("/mail")
+    public ResponseEntity<String> sayHello() {
+        mailSenderService.send(
+                "glucharik@mail.ru",
+                "Hello my friend",
+                "Ку-ку!"
+        );
+        return ResponseEntity.ok("Хочет работать");
 
     }
 
