@@ -58,7 +58,6 @@ public class EmployeeController {
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
-
     }
 
     @GetMapping("/mail")
@@ -69,7 +68,17 @@ public class EmployeeController {
                 "Ку-ку!"
         );
         return ResponseEntity.ok("Хочет работать");
+    }
 
+    @PostMapping("/{id}/xls")
+    public ResponseEntity<String> createXLSFile(@PathVariable Long id){
+        EmployeeDto employee = service.getEmployeeById(id);
+        if (employee != null) {
+            mailSenderService.createXLSFile(employee);
+            return ResponseEntity.ok("File" + employee.getId() + " created");
+            }else{
+                return ResponseEntity.notFound().build();
+        }
     }
 
 //    public ResponseEntity<Employee> isValidEmail(@RequestParam String email){
