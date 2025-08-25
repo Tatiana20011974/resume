@@ -2,9 +2,12 @@ package com.example.demo.restControllers;
 
 import com.example.demo.dto.EmployeeDto;
 import com.example.demo.model.Employee;
+import com.example.demo.model.FormatFiles;
+import com.example.demo.request.MailRequest;
 import com.example.demo.services.EmployeeServices;
 import com.example.demo.services.MailSenderService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -79,6 +82,34 @@ public class EmployeeController {
             }else{
                 return ResponseEntity.notFound().build();
         }
+    }
+
+    @PostMapping("/{id}/doc")
+    public ResponseEntity<String> createDOCFile(@PathVariable Long id){
+        EmployeeDto employee = service.getEmployeeById(id);
+        if (employee != null) {
+            mailSenderService.createDOCFile(employee);
+            return ResponseEntity.ok("File" + employee.getId() + " created");
+        }else{
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PostMapping("/{id}/attachment")
+    public ResponseEntity<String> sendEmailWithAttachment(@PathVariable Long id, @RequestBody @Valid MailRequest mailRequest){
+        EmployeeDto employee = service.getEmployeeById(id);
+
+            String file = switch (mailRequest.getFormatFiles()){
+                case DOCX -> mailSenderService.createDOCFile(employee);
+                case XLSX -> mailSenderService.createXLSFile(employee);
+            };
+            mailSenderService.sendMailWithAttachment(
+                    mailRequest.getMailAddress(),
+                    "Hello Hello Hello",
+                    "Ля-Ля-Ля!",
+                    file
+            );
+            return ResponseEntity.ok("File" + employee.getId() + " created");
     }
 
 //    public ResponseEntity<Employee> isValidEmail(@RequestParam String email){
