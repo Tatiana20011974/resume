@@ -10,6 +10,7 @@ import com.example.demo.services.MailSenderService;
 import com.example.demo.services.fileFabrica.DocxFileGenerator;
 import com.example.demo.services.fileFabrica.FileGenerateFactory;
 import com.example.demo.services.fileFabrica.FileGenerator;
+import com.example.demo.services.rabbitMQ.AmqpProducerService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -26,6 +27,7 @@ public class EmployeeController {
     private final EmployeeServices service;
     private final MailSenderService mailSenderService;
     private final FileService fileService;
+    private final AmqpProducerService amqpProducerService;
 
     @GetMapping("/{id}")
     public ResponseEntity<EmployeeDto> getEmployeeById(@PathVariable Long id) {
@@ -112,6 +114,13 @@ public class EmployeeController {
                     fileService.createFile(employee, mailRequest.getFormatFiles())
             );
             return ResponseEntity.ok("File" + employee.getId() + " created");
+    }
+
+    @PostMapping("/{id}/rabbit-email")
+    public ResponseEntity<String> sendEmailToRabbit(@PathVariable Long id){
+        EmployeeDto employee = service.getEmployeeById(id);
+        amqpProducerService.sendMessage(employee);
+        return ResponseEntity.ok("Email about " + employee);
     }
 
 //    public ResponseEntity<Employee> isValidEmail(@RequestParam String email){
