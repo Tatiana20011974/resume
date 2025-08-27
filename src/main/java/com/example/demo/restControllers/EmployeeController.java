@@ -5,7 +5,11 @@ import com.example.demo.model.Employee;
 import com.example.demo.model.FormatFiles;
 import com.example.demo.request.MailRequest;
 import com.example.demo.services.EmployeeServices;
+import com.example.demo.services.FileService;
 import com.example.demo.services.MailSenderService;
+import com.example.demo.services.fileFabrica.DocxFileGenerator;
+import com.example.demo.services.fileFabrica.FileGenerateFactory;
+import com.example.demo.services.fileFabrica.FileGenerator;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -21,6 +25,7 @@ import java.util.Optional;
 public class EmployeeController {
     private final EmployeeServices service;
     private final MailSenderService mailSenderService;
+    private final FileService fileService;
 
     @GetMapping("/{id}")
     public ResponseEntity<EmployeeDto> getEmployeeById(@PathVariable Long id) {
@@ -73,22 +78,23 @@ public class EmployeeController {
         return ResponseEntity.ok("Хочет работать");
     }
 
-    @PostMapping("/{id}/xls")
-    public ResponseEntity<String> createXLSFile(@PathVariable Long id){
-        EmployeeDto employee = service.getEmployeeById(id);
-        if (employee != null) {
-            mailSenderService.createXLSFile(employee);
-            return ResponseEntity.ok("File" + employee.getId() + " created");
-            }else{
-                return ResponseEntity.notFound().build();
-        }
-    }
+//    @PostMapping("/{id}/xls")
+//    public ResponseEntity<String> createXLSFile(@PathVariable Long id){
+//        EmployeeDto employee = service.getEmployeeById(id);
+//        if (employee != null) {
+//            DocxFileGenerator.generateFile(employee);
+//            return ResponseEntity.ok("File" + employee.getId() + " created");
+//            }else{
+//                return ResponseEntity.notFound().build();
+//        }
+//    }
 
-    @PostMapping("/{id}/doc")
-    public ResponseEntity<String> createDOCFile(@PathVariable Long id){
+    @PostMapping("/{id}")
+    public ResponseEntity<String> createFile(@PathVariable Long id, @RequestBody @Valid MailRequest mailRequest){
         EmployeeDto employee = service.getEmployeeById(id);
         if (employee != null) {
-            mailSenderService.createDOCFile(employee);
+            FileGenerator fileGenerator = FileGenerateFactory.getFileGenerator(mailRequest.getFormatFiles());
+            fileGenerator.generateFile(employee);
             return ResponseEntity.ok("File" + employee.getId() + " created");
         }else{
             return ResponseEntity.notFound().build();
@@ -99,15 +105,11 @@ public class EmployeeController {
     public ResponseEntity<String> sendEmailWithAttachment(@PathVariable Long id, @RequestBody @Valid MailRequest mailRequest){
         EmployeeDto employee = service.getEmployeeById(id);
 
-            String file = switch (mailRequest.getFormatFiles()){
-                case DOCX -> mailSenderService.createDOCFile(employee);
-                case XLSX -> mailSenderService.createXLSFile(employee);
-            };
             mailSenderService.sendMailWithAttachment(
                     mailRequest.getMailAddress(),
                     "Hello Hello Hello",
                     "Ля-Ля-Ля!",
-                    file
+                    fileService.createFile(employee, mailRequest.getFormatFiles())
             );
             return ResponseEntity.ok("File" + employee.getId() + " created");
     }
