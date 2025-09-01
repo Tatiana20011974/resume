@@ -1,8 +1,10 @@
 package com.example.demo.restControllers;
 
+import com.example.demo.dto.EmployeeDto;
 import com.example.demo.dto.ProjectDto;
 import com.example.demo.request.CreateProjectRequest;
 import com.example.demo.services.ProjectServices;
+import com.example.demo.services.rabbitMQ.AmqpProducerService1;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,6 +27,7 @@ import java.util.List;
 @RequestMapping("/projects")
 public class ProjectController {
     private final ProjectServices service;
+    private final AmqpProducerService1 amqpProducerService1;
 
     @Operation(summary = "Получить имя по иднетификвтору",
             description = "Достает из базы данных и преобразует в ДТО данные об employee")
@@ -63,5 +66,11 @@ public class ProjectController {
         } catch (EntityNotFoundException e) {
             return ResponseEntity.badRequest().build();
         }
+    }
+    @PostMapping("/{id}/rabbit-email")
+    public ResponseEntity<String> sendEmailToRabbit(@PathVariable Long id){
+        ProjectDto projectDto = service.getProjectById(id);
+        amqpProducerService1.sendMessage(projectDto);
+        return ResponseEntity.ok("Email about " + projectDto);
     }
 }
