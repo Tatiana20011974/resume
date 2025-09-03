@@ -1,5 +1,6 @@
 package com.example.demo.restControllers;
 
+import com.example.demo.annotations.SimpleLog;
 import com.example.demo.dto.EmployeeDto;
 import com.example.demo.dto.ProjectDto;
 import com.example.demo.request.CreateProjectRequest;
@@ -25,6 +26,7 @@ import java.util.List;
 @Controller
 @AllArgsConstructor
 @RequestMapping("/projects")
+@SimpleLog
 public class ProjectController {
     private final ProjectServices service;
     private final AmqpProducerService1 amqpProducerService1;
