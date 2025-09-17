@@ -7,6 +7,7 @@ import com.example.demo.dto.ProjectDto;
 import com.example.demo.mappers.EmployeeMapper;
 import com.example.demo.model.Employee;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -37,5 +38,14 @@ public class EmployeeServices {
         Employee employee = repository.findByMail(mail)
                 .orElseThrow(() -> new EntityNotFoundException("Project not found"));
         return mapper.toDto(employee);
+    }
+    @Transactional
+    public EmployeeDto save(EmployeeDto dto){
+        var saved = repository.save(mapper.toEntity(dto));
+        return mapper.toDto(saved);
+    }
+
+    public void deleteAll(){
+        repository.deleteAll();
     }
 }

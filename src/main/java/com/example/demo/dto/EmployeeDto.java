@@ -1,10 +1,10 @@
 package com.example.demo.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-@Getter
-@Setter
+@Builder
+@Data
+//@AllArgsConstructor
 public class EmployeeDto {
     private Long id;
     private String image;

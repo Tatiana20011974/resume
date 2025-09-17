@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -19,10 +20,16 @@ class EmployeeServicesTest {
     private EmployeeMapper mapper;
     private final Long EMPLOYEE_ID = 1L;
     private final Employee EMPLOYEE = new Employee();
-    private final EmployeeDto employeeDto = new EmployeeDto();
+    private final EmployeeDto employeeDto = EmployeeDto.builder()
+            .id(1L)
+            .image("/images/image.jpg")
+            .name("Tanya")
+            .telephon(3742934435L)
+            .mail("rsfhgg@mail.ru")
+            .build();
     private final String EMPLOYEE_EMAIL = "Tata";
     @InjectMocks
-    private EmployeeServices employeeServices;
+    private EmployeeServices employeeServices;//(1,'Tanya','/images/image.jpg',3742934435,'rsfhgg@mail.ru' ),
 
     @Test
     public void getEmployeeByIdTest() {

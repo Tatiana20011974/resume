@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(ProjectController.class)
 class ProjectControllerTest {
     private static final Long PROJECT_ID = 1L;
-    private static final ProjectDto PROJECT = new ProjectDto();
+    private static final ProjectDto PROJECT = ProjectDto.builder().build();
     private final List<ProjectDto> PROJECT_LIST = List.of(PROJECT);
     private static final CreateProjectRequest REQUEST = new CreateProjectRequest("Tata", "ProjectControllerTest", "Glukhova");
 
