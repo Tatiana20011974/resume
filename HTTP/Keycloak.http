@@ -37,3 +37,7 @@ Authorization: Bearer {{keycloak_admin_token_with_openid}}
 GET http://localhost:8081/admin/realms/master/users?username=user2
 Authorization: Bearer {{keycloak_admin_token_with_openid}}
 Content-Type: application/json
+
+###удаление пользователя
+DELETE http://localhost:8081/admin/realms/master/users/809409d3-5d70-407b-9191-e35585dd8e41
+Authorization: Bearer {{keycloak_admin_token_with_openid}}
