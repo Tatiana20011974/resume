@@ -23,5 +23,48 @@ services:
       - RABBITMQ_DEFAULT_PASS=password
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
-volumes:
-    rabbitmq_data:
+  postgres-2:
+    image: postgres:15
+    container_name: keycloak-db
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: 12345
+    ports:
+      - "5433:5433"
+    volumes:
+      - postgres2_data:/var/lib/postgresql/data
+    restart: always
+    networks:
+      - app-network
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:21.1.2
+    container_name: keycloak
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://keycloak-db:5432/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: 12345
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: 12345
+      KC_HTTP_ENABLED: true
+      KC_HOSTNAME_STRICT: false
+      KC_HOSTNAME_STRICT_HTTPS: false
+    ports:
+      - "8081:8080"
+    restart: unless-stopped
+    depends_on:
+      - postgres-2
+    networks:
+      - app-network
+    command: [ "start-dev" ] # запуск в режиме разработки
+
+
+volumes: # сохранение двнный между перезагрузками
+  postgres_data:
+  rabbitmq_data:
+  postgres2_data:
+networks: # позволим контейнером общаться между собой по имени
+  app-network:
+    driver: bridge
