@@ -41,3 +41,30 @@ Content-Type: application/json
 ###удаление пользователя
 DELETE http://localhost:8081/admin/realms/master/users/809409d3-5d70-407b-9191-e35585dd8e41
 Authorization: Bearer {{keycloak_admin_token_with_openid}}
+
+###  Auth and get token
+POST http://localhost:8081/realms/resume/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+client_id=resumeID&client_secret=w9E3StaKRRxAKgeqqukYhCVyJEMC4KUA&grant_type=client_credentials&scope=openid profile email
+
+> {% client.global.set("auth_token", response.body.access_token); %}
+
+### Получение информации о user
+GET http://localhost:8081/realms/resume/protocol/openid-connect/userinfo
+Authorization: Bearer {{auth_token}}
+
+### Получить токен администратора Keycloak с scope=openid
+POST http://localhost:8081/realms/resume/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+client_id=admin-cli&grant_type=password&username=admin&password=12345&scope=openid
+
+> {%
+    client.global.set("keycloak_admin_token_with_openid", response.body.access_token);
+    client.global.set("keycloak_refresh_token", response.body.refresh_token);
+%}
+
+### Получение информации о user
+GET http://localhost:8081/realms/resume/protocol/openid-connect/userinfo
+Authorization: Bearer {{keycloak_admin_token_with_openid}}
