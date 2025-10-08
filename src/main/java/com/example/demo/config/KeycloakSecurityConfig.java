@@ -1,4 +1,5 @@
-import com.example.demo.config.KeyCloakJwtAuthenticationConverter;
+package com.example.demo.config;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
@@ -16,9 +17,17 @@ public class KeycloakSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(
+                                "/swagger-ui.html",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/swagger-resources/**",
+                                "/webjars/**",
+                                "/auth"
+                        ).permitAll()
                         .requestMatchers(HttpMethod.GET,"/resumes").hasRole("constructor")
                         .requestMatchers(HttpMethod.GET,"/projects").hasRole("meneger")
-                        .requestMatchers(HttpMethod.GET,"/employees").hasAnyRole("resumeRole")
+                        .requestMatchers(HttpMethod.GET,"/employees").hasAnyRole("resumeRole", "offline_access")
                         .requestMatchers("/**").permitAll()
                         .anyRequest().authenticated()
                 )
