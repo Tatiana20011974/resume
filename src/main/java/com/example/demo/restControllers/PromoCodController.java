@@ -42,6 +42,4 @@ public class PromoCodController {
         var promoCod = repository.findAll();
         return ResponseEntity.ok(promoCod);
     }
-
-
 }
